@@ -1,0 +1,4 @@
+Django==2.0.2
+djangorestframework==3.7.7
+drf-writable-nested==0.4.1
+pytz==2018.3

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import *
+from drf_writable_nested import WritableNestedModelSerializer
 
 
 class QuestionSerializer(serializers.ModelSerializer):
@@ -9,9 +10,9 @@ class QuestionSerializer(serializers.ModelSerializer):
         fields = ('body', 'pk')
 
 
-class AnswerSerializer(serializers.ModelSerializer):
+class AnswerSerializer(WritableNestedModelSerializer):
+    question = QuestionSerializer()
 
     class Meta:
         model = Answer
         fields = ('question', 'body',)
-        depth = 1  # this causes 'create' method to ignore question, comment to make it work, but without depth
