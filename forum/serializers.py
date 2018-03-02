@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import *
-from drf_writable_nested import WritableNestedModelSerializer
 
 
 class QuestionSerializer(serializers.ModelSerializer):
@@ -10,9 +9,13 @@ class QuestionSerializer(serializers.ModelSerializer):
         fields = ('body', 'pk')
 
 
-class AnswerSerializer(WritableNestedModelSerializer):
-    question = QuestionSerializer()
+class AnswerSerializer(serializers.ModelSerializer):
+    question_pk = serializers.PrimaryKeyRelatedField(
+        queryset=Question.objects.all(), source='question', write_only=True
+    )
 
     class Meta:
         model = Answer
-        fields = ('question', 'body',)
+        fields = ('question', 'question_pk', 'body',)
+        depth = 1
+
