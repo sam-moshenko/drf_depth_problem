@@ -1,21 +1,22 @@
 from rest_framework import serializers
 from .models import *
+from drf_writable_nested.serializers import WritableNestedModelSerializer
 
-
-class QuestionSerializer(serializers.ModelSerializer):
-
+class AccuracySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Question
-        fields = ('body', 'pk')
+        model = Accuracy
+        fields = "__all__"
 
-
-class AnswerSerializer(serializers.ModelSerializer):
-    question_pk = serializers.PrimaryKeyRelatedField(
-        queryset=Question.objects.all(), source='question', write_only=True
-    )
+class AnswerSerializer(WritableNestedModelSerializer):
 
     class Meta:
         model = Answer
-        fields = ('question', 'question_pk', 'body',)
+        fields = ("__all__")
         depth = 1
 
+
+class QuestionSerializer(WritableNestedModelSerializer):
+    answer_set = AnswerSerializer(many=True)
+    class Meta:
+        model = Question
+        fields = ('body', 'pk', "answer_set")
